@@ -10,7 +10,7 @@ Force delete files or folders using glob patterns.
 
 Remember that if `git` doesnʼt manage those files, `force-del` will delete them permanently (not to the trash).
 
-## How does it works?
+## How does it work?
 
 * Files were committed in `git`:
 
