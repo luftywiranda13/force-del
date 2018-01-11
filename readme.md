@@ -1,5 +1,7 @@
 # force-del
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/luftywiranda13/force-del.svg)](https://greenkeeper.io/)
+
 [![Package Version](https://img.shields.io/npm/v/force-del.svg)](https://www.npmjs.com/package/force-del)
 [![Build Status: Linux](https://img.shields.io/travis/luftywiranda13/force-del/master.svg)](https://travis-ci.org/luftywiranda13/force-del)
 [![Build Status: Windows](https://ci.appveyor.com/api/projects/status/1txdukxkuep0peid/branch/master?svg=true)](https://ci.appveyor.com/project/luftywiranda13/force-del/branch/master)
