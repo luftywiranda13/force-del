@@ -1,0 +1,94 @@
+{
+  "name": "force-del",
+  "version": "0.0.0",
+  "description": "Force delete files or folders using glob patterns",
+  "license": "MIT",
+  "repository": "https://github.com/luftywiranda13/force-del",
+  "author": {
+    "name": "Lufty Wiranda",
+    "email": "lufty.wiranda@gmail.com",
+    "url": "https://www.luftywiranda.com"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "precommit": "remove-lockfiles && xo --fix && lint-staged",
+    "lint": "xo",
+    "test:watch": "jest --watch",
+    "test": "jest --coverage"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "del": "^3.0.0",
+    "execa": "^0.8.0",
+    "globby": "^7.1.1"
+  },
+  "devDependencies": {
+    "async-to-gen": "^1.3.3",
+    "eslint-config-prettier": "^2.9.0",
+    "fs-extra": "^5.0.0",
+    "husky": "^0.14.3",
+    "jest": "^22.0.4",
+    "lint-staged": "^6.0.0",
+    "pify": "^3.0.0",
+    "prettier": "^1.9.2",
+    "remove-lockfiles": "^2.0.4",
+    "staged-git-files": "0.0.4",
+    "tempy": "^0.2.1",
+    "xo": "^0.18.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "async-to-gen"
+    },
+    "watchPathIgnorePatterns": [
+      "<rootDir>/*.tmp"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "xo": {
+    "extends": "prettier",
+    "envs": [
+      "jest"
+    ]
+  },
+  "keywords": [
+    "clean",
+    "cleaning",
+    "cleanup",
+    "del",
+    "delete",
+    "destroy",
+    "dir",
+    "directories",
+    "directory",
+    "file",
+    "files",
+    "filesystem",
+    "folder",
+    "folders",
+    "fs",
+    "glob",
+    "gulpfriendly",
+    "remove",
+    "rimraf",
+    "rm",
+    "rmdir",
+    "rmrf",
+    "trash",
+    "unlink"
+  ]
+}
