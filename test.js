@@ -1,115 +1,82 @@
 'use strict';
 
-const path = require('path');
-const { existsSync, mkdir, writeFileSync } = require('fs-extra');
+const { join } = require('path');
+const { pathExistsSync } = require('fs-extra');
 const execa = require('execa');
-const pify = require('pify');
-const sgf = require('staged-git-files');
-const tempy = require('tempy');
+const fixtures = require('fixturez');
 
 const forceDel = require('./');
 
+const f = fixtures(__dirname);
+
+const setupRepo = async (cwd = process.cwd()) => {
+  await execa('git', ['init'], { cwd });
+  await execa('git', ['add', '--all'], { cwd });
+};
+
 describe('in temp dir', () => {
-  let fixtures;
-  const files = ['1.tmp', '2.tmp', '3.tmp', 'n.tmp'];
+  it('forces remove files from git repo', async () => {
+    expect.assertions(3);
+    const tmpPath = f.copy('fixtures');
 
-  beforeEach(async () => {
-    fixtures = path.join(tempy.directory(), 'fixtures');
-    await mkdir(fixtures);
+    await setupRepo(tmpPath);
+    await forceDel('**/*.txt', { cwd: tmpPath });
 
-    files.forEach(x => {
-      writeFileSync(`${fixtures}/${x}`);
-    });
-  });
-  it('forces delete files', async () => {
-    expect.assertions(5);
-
-    // Setup dummy git repo
-    await execa('git', ['init'], { cwd: fixtures });
-    await execa('git', ['add'].concat(files), { cwd: fixtures });
-
-    await forceDel('*.tmp', { cwd: fixtures });
-
-    sgf.cwd = fixtures;
-    const stagedFiles = await pify(sgf)();
-
-    expect(stagedFiles).toEqual([]);
-    expect(existsSync(`${fixtures}/1.tmp`)).toBe(false);
-    expect(existsSync(`${fixtures}/2.tmp`)).toBe(false);
-    expect(existsSync(`${fixtures}/3.tmp`)).toBe(false);
-    expect(existsSync(`${fixtures}/n.tmp`)).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
+      false
+    );
   });
 
-  it('resolves absolute paths of deleted files', async () => {
-    expect.assertions(1);
-    const expected = files.map(x => path.join(fixtures, x));
+  it('forces remove files from general file-system', async () => {
+    expect.assertions(3);
+    const tmpPath = f.copy('fixtures');
 
-    const res = await forceDel('*.tmp', { cwd: fixtures });
+    await forceDel('**/*.txt', { cwd: tmpPath });
 
-    expect(res).toEqual(expected);
-  });
-
-  it('resolves empty array when no files matched', async () => {
-    expect.assertions(1);
-
-    const res = await forceDel('*.jpg', { cwd: fixtures });
-
-    expect(res).toEqual([]);
+    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
+      false
+    );
   });
 });
 
 describe('in `process.cwd()`', () => {
-  const cwd = process.cwd();
-  const files = ['1.tmp', '2.tmp', '3.tmp', 'n.tmp'];
-
-  beforeEach(async () => {
-    // Simulate the process as if `process.cwd() === fixtures`
-    const fixtures = path.join(tempy.directory(), 'fixtures');
-    await mkdir(fixtures);
-    process.chdir(fixtures);
-
-    files.forEach(x => {
-      writeFileSync(x);
-    });
-  });
+  const realCWD = process.cwd();
 
   afterEach(() => {
-    // Move back to the real `process.cwd()`
-    process.chdir(cwd);
+    // Move the process back to the real `process.cwd()`
+    process.chdir(realCWD);
   });
 
-  it('forces delete files', async () => {
-    expect.assertions(5);
+  it('forces remove files from git repo', async () => {
+    expect.assertions(3);
+    const tmpPath = f.copy('fixtures');
+    process.chdir(tmpPath);
 
-    // Setup dummy git repo
-    await execa('git', ['init']);
-    await execa('git', ['add'].concat(files));
+    await setupRepo();
+    await forceDel('**/*.txt');
 
-    await forceDel('*.tmp');
-
-    const stagedFiles = await pify(sgf)();
-
-    expect(stagedFiles).toEqual([]);
-    expect(existsSync('1.tmp')).toBe(false);
-    expect(existsSync('2.tmp')).toBe(false);
-    expect(existsSync('3.tmp')).toBe(false);
-    expect(existsSync('4.tmp')).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
+      false
+    );
   });
 
-  it('returns absolute paths of deleted files', async () => {
-    expect.assertions(1);
-    const expected = files.map(x => path.resolve(x));
+  it('forces remove files from general file-system', async () => {
+    expect.assertions(3);
+    const tmpPath = f.copy('fixtures');
+    process.chdir(tmpPath);
 
-    const res = await forceDel('*.tmp');
+    await forceDel('**/*.txt');
 
-    expect(res).toEqual(expected);
-  });
-
-  it('resolves empty array when no files matched', async () => {
-    expect.assertions(1);
-
-    const res = await forceDel('*.jpg');
-
-    expect(res).toEqual([]);
+    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
+    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
+      false
+    );
   });
 });
