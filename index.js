@@ -1,18 +1,20 @@
 'use strict';
 
-const path = require('path');
+const { resolve } = require('path');
 const del = require('del');
 const execa = require('execa');
 const globby = require('globby');
+const pMap = require('p-map');
 
-const gitForceRemove = (files, cwd) =>
-  execa('git', ['rm', '-f'].concat(files), { cwd }).then(() =>
-    files.map(x => path.resolve(cwd, x))
-  );
+const forceDel = (file, cwd) =>
+  execa('git', ['rm', '-f', file], { cwd })
+    .then(() => [resolve(file)])
+    .catch(() => del(file, { cwd }));
 
-const forceDel = (patterns, { cwd = process.cwd() } = {}) =>
-  globby(patterns, { cwd })
-    .then(files => gitForceRemove(files, cwd))
-    .catch(() => del(patterns, { cwd }));
+module.exports = (patterns, { cwd = process.cwd() } = {}) => {
+  const mapper = file => forceDel(file, cwd);
 
-module.exports = forceDel;
+  return globby(patterns, { cwd })
+    .then(files => pMap(files, mapper))
+    .then(res => [].concat(...res));
+};
