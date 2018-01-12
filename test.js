@@ -9,13 +9,13 @@ const forceDel = require('./');
 
 const f = fixtures(__dirname);
 
-const setupRepo = async (cwd = process.cwd()) => {
+const setupRepo = async cwd => {
   await execa('git', ['init'], { cwd });
   await execa('git', ['add', '--all'], { cwd });
 };
 
 describe('in temp dir', () => {
-  it('forces remove files from git repo', async () => {
+  it('removes files from git repo', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
 
@@ -29,7 +29,7 @@ describe('in temp dir', () => {
     );
   });
 
-  it('forces remove files from general file-system', async () => {
+  it('removes files from general file-system', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
 
@@ -51,12 +51,12 @@ describe('in `process.cwd()`', () => {
     process.chdir(realCWD);
   });
 
-  it('forces remove files from git repo', async () => {
+  it('removes files from git repo', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
     process.chdir(tmpPath);
 
-    await setupRepo();
+    await setupRepo(tmpPath);
     await forceDel('**/*.txt');
 
     expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
@@ -66,7 +66,7 @@ describe('in `process.cwd()`', () => {
     );
   });
 
-  it('forces remove files from general file-system', async () => {
+  it('removes files from general file-system', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
     process.chdir(tmpPath);

@@ -43,10 +43,7 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.js$": "async-to-gen"
-    },
-    "watchPathIgnorePatterns": [
-      "<rootDir>/*.tmp"
-    ]
+    }
   },
   "lint-staged": {
     "*.{js,json,md}": [

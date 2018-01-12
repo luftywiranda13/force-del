@@ -8,7 +8,7 @@ const pMap = require('p-map');
 
 const forceDel = (file, cwd) =>
   execa('git', ['rm', '-f', file], { cwd })
-    .then(() => [resolve(file)])
+    .then(() => resolve(file))
     .catch(() => del(file, { cwd }));
 
 module.exports = (patterns, { cwd = process.cwd() } = {}) => {
