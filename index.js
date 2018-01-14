@@ -14,7 +14,7 @@ const forceDel = (file, cwd) =>
 module.exports = (patterns, { cwd = process.cwd() } = {}) => {
   const mapper = file => forceDel(file, cwd);
 
-  return globby(patterns, { cwd })
+  return globby(patterns, { cwd, nodir: false })
     .then(files => pMap(files, mapper))
     .then(res => [].concat(...res));
 };
