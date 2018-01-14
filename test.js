@@ -15,7 +15,7 @@ const setupRepo = async cwd => {
 };
 
 describe('in temp dir', () => {
-  it('removes folder', async () => {
+  it('deletes folder', async () => {
     expect.assertions(1);
     const tmpPath = f.copy('fixtures');
 
@@ -25,7 +25,7 @@ describe('in temp dir', () => {
     expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
   });
 
-  it('removes files from git repo', async () => {
+  it('deletes files from git repo', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
 
@@ -39,7 +39,7 @@ describe('in temp dir', () => {
     );
   });
 
-  it('removes files from general file-system', async () => {
+  it('deletes files from general file-system', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
 
@@ -61,7 +61,7 @@ describe('in `process.cwd()`', () => {
     process.chdir(realCWD);
   });
 
-  it('removes folder', async () => {
+  it('deletes folder', async () => {
     expect.assertions(1);
     const tmpPath = f.copy('fixtures');
     process.chdir(tmpPath);
@@ -72,7 +72,7 @@ describe('in `process.cwd()`', () => {
     expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
   });
 
-  it('removes files from git repo', async () => {
+  it('deletes files from git repo', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
     process.chdir(tmpPath);
@@ -87,7 +87,7 @@ describe('in `process.cwd()`', () => {
     );
   });
 
-  it('removes files from general file-system', async () => {
+  it('deletes files from general file-system', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
     process.chdir(tmpPath);
