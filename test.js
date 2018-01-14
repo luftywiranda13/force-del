@@ -15,6 +15,16 @@ const setupRepo = async cwd => {
 };
 
 describe('in temp dir', () => {
+  it('removes folder', async () => {
+    expect.assertions(1);
+    const tmpPath = f.copy('fixtures');
+
+    await setupRepo(tmpPath);
+    await forceDel('nested', { cwd: tmpPath });
+
+    expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
+  });
+
   it('removes files from git repo', async () => {
     expect.assertions(3);
     const tmpPath = f.copy('fixtures');
@@ -49,6 +59,17 @@ describe('in `process.cwd()`', () => {
   afterEach(() => {
     // Move the process back to the real `process.cwd()`
     process.chdir(realCWD);
+  });
+
+  it('removes folder', async () => {
+    expect.assertions(1);
+    const tmpPath = f.copy('fixtures');
+    process.chdir(tmpPath);
+
+    await setupRepo(tmpPath);
+    await forceDel('nested');
+
+    expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
   });
 
   it('removes files from git repo', async () => {
