@@ -6,15 +6,17 @@ const execa = require('execa');
 const globby = require('globby');
 const pMap = require('p-map');
 
-const forceDel = (file, cwd) =>
-  execa('git', ['rm', '-f', file], { cwd })
-    .then(() => resolve(file))
-    .catch(() => del(file, { cwd }));
+const forceDelete = (file, options) =>
+  execa('git', ['rm', '-f', '-r', file], options)
+    .then(file => resolve(file))
+    .catch(() => del(file, options));
 
 module.exports = (patterns, { cwd = process.cwd() } = {}) => {
-  const mapper = file => forceDel(file, cwd);
+  const opts = Object.assign({}, { cwd, nodir: false });
 
-  return globby(patterns, { cwd, nodir: false })
+  const mapper = file => forceDelete(file, opts);
+
+  return globby(patterns, opts)
     .then(files => pMap(files, mapper))
     .then(res => [].concat(...res));
 };
