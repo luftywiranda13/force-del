@@ -1,109 +1,94 @@
 'use strict';
 
-const { join } = require('path');
-const { pathExistsSync } = require('fs-extra');
+const { pathExists } = require('fs-extra');
 const execa = require('execa');
 const fixtures = require('fixturez');
+const pify = require('pify');
+const sgf = require('staged-git-files');
 
 const forceDel = require('./');
 
 const f = fixtures(__dirname);
 
-const setupRepo = async cwd => {
-  await execa('git', ['init'], { cwd });
-  await execa('git', ['add', '--all'], { cwd });
-};
-
-describe('in temp dir', () => {
-  it('deletes folder', async () => {
-    expect.assertions(2);
-    const tmpPath = f.copy('fixtures');
-
-    await setupRepo(tmpPath);
-    await forceDel('nested', { cwd: tmpPath });
-
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
-  });
-
-  it('deletes files from git repo', async () => {
-    expect.assertions(4);
-    const tmpPath = f.copy('fixtures');
-
-    await setupRepo(tmpPath);
-    await forceDel('**/*.txt', { cwd: tmpPath });
-
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
-      false
-    );
-  });
-
-  it('deletes files from general file-system', async () => {
-    expect.assertions(4);
-    const tmpPath = f.copy('fixtures');
-
-    await forceDel('**/*.txt', { cwd: tmpPath });
-
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
-      false
-    );
-  });
-});
-
-describe('in `process.cwd()`', () => {
+describe('git repo', () => {
   const realCWD = process.cwd();
+  let tmpPath;
+
+  beforeEach(async () => {
+    tmpPath = f.copy('fixtures');
+    sgf.cwd = tmpPath;
+
+    process.chdir(tmpPath);
+    await execa('git', ['init']);
+    await execa('git', ['config', 'user.email', 'foo@bar.com']);
+    await execa('git', ['config', 'user.name', 'Foo Bar']);
+  });
 
   afterEach(() => {
-    // Move the process back to the real `process.cwd()`
+    sgf.cwd = realCWD;
     process.chdir(realCWD);
   });
 
-  it('deletes folder', async () => {
+  it('deletes new directory', async () => {
     expect.assertions(2);
-    const tmpPath = f.copy('fixtures');
-    process.chdir(tmpPath);
 
-    await setupRepo(tmpPath);
-    await forceDel('nested');
+    await execa('git', ['add', 'foo']);
+    await forceDel('foo');
 
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'nested'))).toBe(false);
+    // No files are tracked.
+    // So, Staging area should not list anything
+    await expect(pify(sgf)()).resolves.toEqual([]);
+    await expect(pathExists('foo')).resolves.toBe(false);
   });
 
-  it('deletes files from git repo', async () => {
-    expect.assertions(4);
-    const tmpPath = f.copy('fixtures');
-    process.chdir(tmpPath);
+  it('deletes new files', async () => {
+    expect.assertions(1);
 
-    await setupRepo(tmpPath);
-    await forceDel('**/*.txt');
+    await execa('git', ['add', '--all']);
+    await forceDel('**/*');
 
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
-      false
-    );
+    await expect(pify(sgf)()).resolves.toEqual([]);
   });
 
-  it('deletes files from general file-system', async () => {
-    expect.assertions(4);
-    const tmpPath = f.copy('fixtures');
+  it('deletes committed files', async () => {
+    expect.assertions(1);
+
+    await execa('git', ['add', '--all']);
+    await execa('git', ['commit', '-m', 'initial commit']);
+    await forceDel('**/*');
+
+    // Staging area should list files marked as `deleted`
+    await expect(pify(sgf)()).resolves.not.toEqual([]);
+  });
+});
+
+describe('general file-system', () => {
+  const realCWD = process.cwd();
+  let tmpPath;
+
+  beforeEach(async () => {
+    tmpPath = f.copy('fixtures');
+
     process.chdir(tmpPath);
+  });
 
-    await forceDel('**/*.txt');
+  afterEach(() => {
+    process.chdir(realCWD);
+  });
 
-    expect(pathExistsSync(tmpPath)).toBe(true);
-    expect(pathExistsSync(join(tmpPath, 'bar.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'file.txt'))).toBe(false);
-    expect(pathExistsSync(join(tmpPath, 'nested', 'nested-file.txt'))).toBe(
-      false
-    );
+  it('deletes directory', async () => {
+    expect.assertions(1);
+
+    await forceDel('foo');
+
+    await expect(pathExists('foo')).resolves.toBe(false);
+  });
+
+  it('deletes files', async () => {
+    expect.assertions(1);
+
+    await forceDel('**/*');
+
+    await expect(pathExists('foo')).resolves.toBe(false);
   });
 });
