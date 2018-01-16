@@ -7,8 +7,8 @@ const globby = require('globby');
 const pMap = require('p-map');
 
 const forceDelete = (file, options) =>
-  execa('git', ['rm', '-f', '-r', file], options)
-    .then(file => resolve(file))
+  execa('git', ['rm', '-rf', file], options)
+    .then(() => resolve(options.cwd, file))
     .catch(() => del(file, options));
 
 module.exports = (patterns, { cwd = process.cwd() } = {}) => {
