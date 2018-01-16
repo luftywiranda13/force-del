@@ -14,7 +14,7 @@ If the matching files or folders are managed by `git`, theyʼll be deleted and m
 
 * Filters the files that should be deleted by using [globby](https://github.com/sindresorhus/globby)
 * Maps those _one-by-one_ to be included in `git rm -f` command
-* Use [del](https://github.com/sindresorhus/del) if the matching item isnʼt managed by `git`
+* Use [rimraf](https://github.com/isaacs/rimraf) if the matching item isnʼt managed by `git`
 * These processes run concurrently
 
 ## Installation
@@ -67,19 +67,11 @@ Default: `false`
 
 From [node-glob](https://github.com/isaacs/node-glob#options). Set to `true` to match files only.
 
-##### force
-
-Type: `boolean`<br />
-Default: `true`
-
-From [del](https://github.com/sindresorhus/del#force). Allow deleting the current working directory and outside. This option only affects matching paths that are not managed by `git`.
-
 Other options are derived from the defaults of these libraries:
 
 * [globby](https://github.com/sindresorhus/globby#options)
 * [node-glob](https://github.com/isaacs/node-glob#options)
 * [execa](https://github.com/sindresorhus/execa/#options)
-* [del](https://github.com/sindresorhus/del#options)
 
 ## Related
 
