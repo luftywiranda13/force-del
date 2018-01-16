@@ -52,6 +52,14 @@ See supported minimatch [patterns](https://github.com/isaacs/minimatch#usage).
 
 Type: `Object`
 
+##### concurrency
+
+Type: `number`<br>
+Default: `Infinity`<br>
+Minimum: `1`
+
+Concurrency limit.
+
 ##### nodir
 
 Type: `boolean`<br />

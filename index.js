@@ -19,7 +19,7 @@ const forceDel = (patterns, options) => {
   const mapper = file => gitForceRemove(file, opts);
 
   return globby(patterns, opts)
-    .then(files => pMap(files, mapper))
+    .then(files => pMap(files, mapper, opts))
     .then(res => [].concat(...res));
 };
 
