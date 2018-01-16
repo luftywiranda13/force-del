@@ -23,8 +23,7 @@ const forceDel = (patterns, options) => {
 
   return globby(patterns, opts)
     .then(files => files.map(x => resolve(opts.cwd || '', x)))
-    .then(resolvedFiles => pMap(resolvedFiles, deleteFiles, opts))
-    .then(deletedFiles => [].concat(...deletedFiles));
+    .then(resolvedFiles => pMap(resolvedFiles, deleteFiles, opts));
 };
 
 module.exports = forceDel;
