@@ -19,15 +19,12 @@ const gitForceRemove = (file, options) =>
 const forceDel = (patterns, options) => {
   const opts = Object.assign({}, DEFAULTS, options);
 
-  const mapper = file => {
-    const resolvedFile = resolve(opts.cwd || '', file);
-
-    return gitForceRemove(resolvedFile, opts).then(() => resolvedFile);
-  };
+  const deleteFiles = file => gitForceRemove(file, opts).then(() => file);
 
   return globby(patterns, opts)
-    .then(files => pMap(files, mapper, opts))
-    .then(res => [].concat(...res));
+    .then(files => files.map(x => resolve(opts.cwd || '', x)))
+    .then(resolvedFiles => pMap(resolvedFiles, deleteFiles, opts))
+    .then(deletedFiles => [].concat(...deletedFiles));
 };
 
 module.exports = forceDel;
