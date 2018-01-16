@@ -8,13 +8,13 @@
 [![Build Status: Windows](https://img.shields.io/appveyor/ci/luftywiranda13/force-del/master.svg?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/luftywiranda13/force-del/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/luftywiranda13/force-del/master.svg?style=flat-square)](https://codecov.io/gh/luftywiranda13/force-del)
 
-If the matching files or folders are managed by `git` theyʼll be deleted and marked as `deleted` in staging area, ready to be committed. In the other hand, `force-del` will delete them permanently (not to the trash).
+If the matching files or folders are managed by `git`, theyʼll be deleted and marked as `deleted` in staging area. Otherwise, theyʼll be deleted permanently (not to the trash).
 
 ## How does it work?
 
 * Filters the files that should be deleted by using [globby](https://github.com/sindresorhus/globby)
-* Maps those files to be included in `git rm -f` command _one-by-one_
-* Fallbacks to use [del](https://github.com/sindresorhus/del) if those files arenʼt managed by `git`
+* Maps those _one-by-one_ to be included in `git rm -f` command
+* Use [del](https://github.com/sindresorhus/del) if the matching item isnʼt managed by `git`
 * These processes run concurrently
 
 ## Installation
