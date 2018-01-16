@@ -11,23 +11,19 @@ const rimrafP = pify(rimraf);
 
 const DEFAULTS = { nodir: false, force: true };
 
-const gitForceRemove = (file, options) => {
-  const resolvedFile = resolve(options.cwd || '', file);
-
-  return execa('git', ['rm', '-rf', resolvedFile], options)
-    .then(() => resolvedFile)
-    .catch(() => rimrafP(resolvedFile, { glob: false }))
-    .then(() => resolvedFile);
-};
+const gitForceRemove = (file, options) =>
+  execa('git', ['rm', '-rf', file], options)
+    // TODO: handle specific `git` errors
+    .catch(() => rimrafP(file, { glob: false }));
 
 const forceDel = (patterns, options) => {
   const opts = Object.assign({}, DEFAULTS, options);
 
-  const mapper = file => gitForceRemove(file, opts);
+  const deleteFiles = file => gitForceRemove(file, opts).then(() => file);
 
   return globby(patterns, opts)
-    .then(files => pMap(files, mapper, opts))
-    .then(res => [].concat(...res));
+    .then(files => files.map(x => resolve(opts.cwd || '', x)))
+    .then(resolvedFiles => pMap(resolvedFiles, deleteFiles, opts));
 };
 
 module.exports = forceDel;
