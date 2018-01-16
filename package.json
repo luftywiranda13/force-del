@@ -22,10 +22,10 @@
     "index.js"
   ],
   "dependencies": {
-    "del": "^3.0.0",
     "execa": "^0.9.0",
     "globby": "^7.1.1",
-    "p-map": "^1.2.0"
+    "p-map": "^1.2.0",
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "async-to-gen": "^1.3.3",

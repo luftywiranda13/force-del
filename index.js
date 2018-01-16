@@ -1,17 +1,24 @@
 'use strict';
 
 const { resolve } = require('path');
-const del = require('del');
 const execa = require('execa');
 const globby = require('globby');
+const pify = require('pify');
 const pMap = require('p-map');
+const rimraf = require('rimraf');
+
+const rimrafP = pify(rimraf);
 
 const DEFAULTS = { nodir: false, force: true };
 
-const gitForceRemove = (file, options) =>
-  execa('git', ['rm', '-rf', file], options)
-    .then(() => resolve(options.cwd || '', file))
-    .catch(() => del(file, options));
+const gitForceRemove = (file, options) => {
+  const resolvedFile = resolve(options.cwd || '', file);
+
+  return execa('git', ['rm', '-rf', resolvedFile], options)
+    .then(() => resolvedFile)
+    .catch(() => rimrafP(resolvedFile, { glob: false }))
+    .then(() => resolvedFile);
+};
 
 const forceDel = (patterns, options) => {
   const opts = Object.assign({}, DEFAULTS, options);
