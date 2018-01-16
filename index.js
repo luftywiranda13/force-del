@@ -14,11 +14,16 @@ const DEFAULTS = { nodir: false, force: true };
 const gitForceRemove = (file, options) => {
   const resolvedFile = resolve(options.cwd || '', file);
 
-  return Promise.resolve(
-    execa('git', ['rm', '-rf', resolvedFile], options).catch(() =>
-      rimrafP(resolvedFile, { glob: false })
-    )
-  ).then(() => resolvedFile);
+  return execa('git', ['rm', '-rf', resolvedFile], options)
+    .catch(err => {
+      if (
+        err.stderr.startsWith('fatal: Not a git repository') ||
+        err.stderr.startsWith('fatal: pathspec')
+      ) {
+        return rimrafP(resolvedFile, { glob: false });
+      }
+    })
+    .then(() => resolvedFile);
 };
 
 const forceDel = (patterns, options) => {
