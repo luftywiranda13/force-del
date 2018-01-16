@@ -1,6 +1,6 @@
 # force-del
 
-> Force delete files or folders using glob patterns
+> Force delete files or folders using globs
 
 [![Package Version](https://img.shields.io/npm/v/force-del.svg?style=flat-square)](https://www.npmjs.com/package/force-del)
 [![Downloads Status](https://img.shields.io/npm/dm/force-del.svg?style=flat-square)](https://npm-stat.com/charts.html?package=force-del&from=2016-04-01)
@@ -37,7 +37,7 @@ forceDel(['**/*.{gif,jpg}', 'oops/vids/*.3gp']).then(paths => {
 
 ### forceDel(patterns, [options])
 
-Returns `Promise<string[]>` of deleted paths.
+Returns `Promise<Array>` of deleted paths.
 
 #### patterns
 
@@ -52,12 +52,26 @@ See supported minimatch [patterns](https://github.com/isaacs/minimatch#usage).
 
 Type: `Object`
 
-##### cwd
+##### nodir
 
-Type: `string`<br />
-Default: `process.cwd()`
+Type: `boolean`<br />
+Default: `false`
 
-Current working directory.
+From [node-glob](https://github.com/isaacs/node-glob#options). Set to `true` to match files only.
+
+##### force
+
+Type: `boolean`<br />
+Default: `true`
+
+From [del](https://github.com/sindresorhus/del#force). Allow deleting the current working directory and outside. This option only affects matching paths that are not managed by `git`.
+
+Other options are derived from the defaults of these libraries:
+
+* [globby](https://github.com/sindresorhus/globby#options)
+* [node-glob](https://github.com/isaacs/node-glob#options)
+* [execa](https://github.com/sindresorhus/execa/#options)
+* [del](https://github.com/sindresorhus/del#options)
 
 ## Related
 
