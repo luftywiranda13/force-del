@@ -20,8 +20,6 @@ describe('git repo', () => {
 
     process.chdir(tmpPath);
     await execa('git', ['init']);
-    await execa('git', ['config', 'user.email', 'foo@bar.com']);
-    await execa('git', ['config', 'user.name', 'Foo Bar']);
   });
 
   afterEach(() => {
