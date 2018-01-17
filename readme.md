@@ -1,6 +1,6 @@
 # force-del
 
-> Force delete files or folders using globs
+> Force delete files or folders using [globs](https://github.com/isaacs/minimatch#usage)
 
 [![Package Version](https://img.shields.io/npm/v/force-del.svg?style=flat-square)](https://www.npmjs.com/package/force-del)
 [![Downloads Status](https://img.shields.io/npm/dm/force-del.svg?style=flat-square)](https://npm-stat.com/charts.html?package=force-del&from=2016-04-01)

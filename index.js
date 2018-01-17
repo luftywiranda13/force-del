@@ -21,6 +21,7 @@ const forceDel = (patterns, options) => {
 
   const mapper = file => {
     const resolvedFile = resolve(opts.cwd || '', file);
+
     return gitForceRemove(resolvedFile, opts).then(() => resolvedFile);
   };
 

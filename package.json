@@ -14,9 +14,8 @@
   },
   "scripts": {
     "precommit": "remove-lockfiles && xo --fix && lint-staged",
-    "lint": "xo",
     "test:watch": "jest --watch",
-    "test": "jest --coverage"
+    "test": "xo && jest --coverage"
   },
   "files": [
     "index.js"
