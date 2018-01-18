@@ -10,9 +10,16 @@ const rimraf = require('rimraf');
 const rimrafP = pify(rimraf);
 
 const gitForceRemove = (file, options) =>
-  execa('git', ['rm', '-rf', file], options)
-    // TODO: handle specific `git` errors
-    .catch(() => rimrafP(file, { glob: false }));
+  execa('git', ['rm', '-rf', file], options).catch(err => {
+    if (
+      err.stderr.startsWith('fatal: Not a git repository') ||
+      err.stderr.startsWith('fatal: pathspec')
+    ) {
+      return Promise.resolve(rimrafP(file, { glob: false }));
+    }
+
+    return Promise.reject(err);
+  });
 
 const forceDel = (patterns, options) => {
   const DEFAULTS = { nodir: false };
