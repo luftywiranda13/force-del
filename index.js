@@ -15,7 +15,7 @@ const gitForceRemove = (file, options) =>
     .catch(() => rimrafP(file, { glob: false }));
 
 const forceDel = (patterns, options) => {
-  const DEFAULTS = { nodir: false, force: true };
+  const DEFAULTS = { nodir: false };
   const opts = Object.assign({}, DEFAULTS, options);
 
   const mapper = file => {
