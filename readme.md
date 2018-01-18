@@ -59,6 +59,13 @@ Minimum: `1`
 
 Concurrency limit.
 
+##### cwd
+
+Type: `string`<br />
+Default: `process.cwd()`
+
+Current working directory.
+
 ##### nodir
 
 Type: `boolean`<br />
