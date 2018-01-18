@@ -6,7 +6,7 @@ const fixtures = require('fixturez');
 const pify = require('pify');
 const sgf = require('staged-git-files');
 
-const forceDel = require('./');
+const forceDel = require('../');
 
 const f = fixtures(__dirname);
 
