@@ -25,11 +25,11 @@ const gitForceRemove = (file, options) =>
   });
 
 const forceDel = (patterns, options) => {
-  const DEFAULTS = { nodir: false };
+  const DEFAULTS = { nodir: false, cwd: process.cwd() };
   const opts = Object.assign({}, DEFAULTS, options);
 
   const mapper = file => {
-    const resolvedFile = resolve(opts.cwd || '', file);
+    const resolvedFile = resolve(opts.cwd, file);
 
     return gitForceRemove(resolvedFile, opts).then(() => resolvedFile);
   };
