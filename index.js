@@ -11,14 +11,17 @@ const rimrafP = pify(rimraf);
 
 const gitForceRemove = (file, options) =>
   execa('git', ['rm', '-rf', file], options).catch(err => {
+    const stderr = err.stderr;
+
     if (
-      err.stderr.startsWith('fatal: Not a git repository') ||
-      err.stderr.startsWith('fatal: pathspec')
+      // TODO: handle error.message = "spawn git EAGAIN"
+      stderr.startsWith('fatal: Not a git repository') ||
+      stderr.startsWith('fatal: pathspec')
     ) {
       return Promise.resolve(rimrafP(file, { glob: false }));
     }
 
-    return Promise.reject(err);
+    return Promise.reject(stderr);
   });
 
 const forceDel = (patterns, options) => {
