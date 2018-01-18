@@ -49,7 +49,7 @@ describe('git repo', () => {
 
     // Staging area should list files marked as `deleted`
     sgf.cwd = tmpPath;
-    await expect(pify(sgf)()).resolves.not.toEqual([]);
+    await expect(pify(sgf)('D')).resolves.not.toEqual([]);
   });
 });
 
