@@ -18,6 +18,7 @@
     "test": "xo && jest --coverage"
   },
   "files": [
+    "lib",
     "index.js"
   ],
   "dependencies": {
