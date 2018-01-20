@@ -1,6 +1,6 @@
 {
   "name": "force-del",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Force delete files or folders using globs",
   "license": "MIT",
   "repository": "https://github.com/luftywiranda13/force-del",
