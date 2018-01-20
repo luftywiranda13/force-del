@@ -16,7 +16,7 @@ const optionsManager = options => {
   return Object.assign({}, DEFAULTS, options);
 };
 
-const forceDel = (patterns, options) => {
+module.exports = (patterns, options) => {
   const opts = optionsManager(options);
   const mapper = file => deleteFile(file, opts);
 
@@ -24,5 +24,3 @@ const forceDel = (patterns, options) => {
     .then(files => files.map(x => resolve(opts.cwd, x)))
     .then(files => pMap(files, mapper, opts));
 };
-
-module.exports = forceDel;

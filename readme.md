@@ -19,7 +19,7 @@ If the matching files or folders are managed by `git`, theyʼll be deleted and m
 ## Installation
 
 ```sh
-npm install --save force-del
+npm install force-del
 ```
 
 ## Usage
