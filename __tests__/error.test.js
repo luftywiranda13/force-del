@@ -23,7 +23,9 @@ describe('error', () => {
 
     const tmpPath = f.copy('fixtures');
 
-    await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow();
+    await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow(
+      'Exceeded process limit, try again later.'
+    );
   });
 
   it("doesn't handle non-git related error", async () => {
