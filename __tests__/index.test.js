@@ -36,7 +36,9 @@ describe('git repo', () => {
     await execa('git', ['add', '--all'], { cwd: tmpPath });
     await forceDel('**/*', { cwd: tmpPath });
 
-    await expect(pify(sgf)()).resolves.toEqual([]);
+    // No commits made,
+    // Staging area should not list any files as `deleted`
+    await expect(pify(sgf)('D')).resolves.toEqual([]);
   });
 
   it('deletes committed files', async () => {
