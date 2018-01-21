@@ -32,13 +32,13 @@
     "eslint-config-prettier": "^2.9.0",
     "fixturez": "^1.1.0",
     "fs-extra": "^5.0.0",
+    "g-status": "^1.0.0",
     "husky": "^0.14.3",
     "jest": "^22.1.0",
     "lint-staged": "^6.0.0",
     "pify": "^3.0.0",
     "prettier": "^1.9.2",
     "remove-lockfiles": "^2.1.1",
-    "staged-git-files": "0.0.4",
     "xo": "^0.18.2"
   },
   "jest": {
