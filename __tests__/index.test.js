@@ -24,9 +24,7 @@ describe('git repo', () => {
     await execa('git', ['add', 'foo'], { cwd: tmpPath });
     await forceDel('foo', { cwd: tmpPath });
 
-    await expect(gStatus({ cwd: tmpPath, patterns: 'foo' })).resolves.toEqual(
-      []
-    );
+    await expect(gStatus(tmpPath, { path: 'foo' })).resolves.toEqual([]);
     await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
   });
 
@@ -38,9 +36,7 @@ describe('git repo', () => {
 
     // No commits made,
     // Staging area should not list any files as `deleted`
-    await expect(
-      gStatus({ cwd: tmpPath, status: { index: 'D' } })
-    ).resolves.toEqual([]);
+    await expect(gStatus(tmpPath, { index: 'D' })).resolves.toEqual([]);
   });
 
   it('deletes committed files', async () => {
@@ -51,9 +47,7 @@ describe('git repo', () => {
     await forceDel('**/*', { cwd: tmpPath });
 
     // Staging area should list files marked as `deleted`
-    await expect(
-      gStatus({ cwd: tmpPath, status: { index: 'D' } })
-    ).resolves.not.toEqual([]);
+    await expect(gStatus(tmpPath, { index: 'D' })).resolves.not.toEqual([]);
   });
 });
 
