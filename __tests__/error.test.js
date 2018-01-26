@@ -9,32 +9,26 @@ const forceDel = require('../');
 
 const f = fixtures(__dirname);
 
-describe('error', () => {
-  afterEach(() => {
-    execa.mockClear();
+it('throws if process limit exceeded', async () => {
+  expect.assertions(1);
+
+  execa.mockImplementation(() => {
+    return Promise.reject(new Error('spawn git EAGAIN'));
   });
 
-  it('throws if process limit exceeded', async () => {
-    expect.assertions(1);
+  const tmpPath = f.copy('fixtures');
 
-    execa.mockImplementation(() => {
-      return Promise.reject(new Error('spawn git EAGAIN'));
-    });
+  await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow(
+    'Exceeded process limit, try again later.'
+  );
+});
 
-    const tmpPath = f.copy('fixtures');
+it("doesn't handle non-git related error", async () => {
+  expect.assertions(1);
 
-    await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow(
-      'Exceeded process limit, try again later.'
-    );
-  });
+  // eslint-disable-next-line prefer-promise-reject-errors
+  execa.mockImplementation(() => Promise.reject({ stderr: 'Oops' }));
+  const tmpPath = f.copy('fixtures');
 
-  it("doesn't handle non-git related error", async () => {
-    expect.assertions(1);
-
-    // eslint-disable-next-line prefer-promise-reject-errors
-    execa.mockImplementation(() => Promise.reject({ stderr: 'Oops' }));
-    const tmpPath = f.copy('fixtures');
-
-    await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow();
-  });
+  await expect(forceDel('foo', { cwd: tmpPath })).rejects.toThrow('Oops');
 });

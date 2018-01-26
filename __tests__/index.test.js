@@ -10,67 +10,63 @@ const forceDel = require('../');
 
 const f = fixtures(__dirname);
 
-describe('git repo', () => {
-  let tmpPath;
+it('deletes untracked directory', async () => {
+  expect.assertions(2);
 
-  beforeEach(async () => {
-    tmpPath = f.copy('fixtures');
-    await execa('git', ['init'], { cwd: tmpPath });
-  });
+  const tmpPath = f.copy('fixtures');
+  await execa('git', ['init'], { cwd: tmpPath });
+  await execa('git', ['add', 'foo'], { cwd: tmpPath });
 
-  it('deletes new directory', async () => {
-    expect.assertions(2);
+  await forceDel('foo', { cwd: tmpPath });
 
-    await execa('git', ['add', 'foo'], { cwd: tmpPath });
-    await forceDel('foo', { cwd: tmpPath });
-
-    await expect(gStatus(tmpPath, { path: 'foo' })).resolves.toEqual([]);
-    await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
-  });
-
-  it('deletes new files', async () => {
-    expect.assertions(1);
-
-    await execa('git', ['add', '--all'], { cwd: tmpPath });
-    await forceDel('**/*', { cwd: tmpPath });
-
-    // No commits made,
-    // Staging area should not list any files as `deleted`
-    await expect(gStatus(tmpPath, { index: 'D' })).resolves.toEqual([]);
-  });
-
-  it('deletes committed files', async () => {
-    expect.assertions(1);
-
-    await execa('git', ['add', '--all'], { cwd: tmpPath });
-    await execa('git', ['commit', '-m', 'initial commit'], { cwd: tmpPath });
-    await forceDel('**/*', { cwd: tmpPath });
-
-    // Staging area should list files marked as `deleted`
-    await expect(gStatus(tmpPath, { index: 'D' })).resolves.not.toEqual([]);
-  });
+  await expect(gStatus({ cwd: tmpPath, path: 'foo' })).resolves.toEqual([]);
+  await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
 });
 
-describe('general file-system', () => {
-  let tmpPath;
+it('deletes directory in general file system', async () => {
+  expect.assertions(1);
 
-  beforeEach(async () => {
-    tmpPath = f.copy('fixtures');
-  });
+  const tmpPath = f.copy('fixtures');
 
-  it('deletes directory', async () => {
-    expect.assertions(1);
+  await forceDel('foo', { cwd: tmpPath });
 
-    await forceDel('foo', { cwd: tmpPath });
+  await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
+});
 
-    await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
-  });
+it('deletes files in general file system', async () => {
+  expect.assertions(1);
 
-  it('deletes files', async () => {
-    expect.assertions(1);
+  const tmpPath = f.copy('fixtures');
 
-    await forceDel('**/*', { cwd: tmpPath });
+  await forceDel('**/*', { cwd: tmpPath });
 
-    await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
-  });
+  await expect(pathExists(join(tmpPath, 'foo'))).resolves.toBe(false);
+});
+
+it('deletes staged files', async () => {
+  expect.assertions(1);
+
+  const tmpPath = f.copy('fixtures');
+  await execa('git', ['init'], { cwd: tmpPath });
+  await execa('git', ['add', '--all'], { cwd: tmpPath });
+
+  await forceDel('**/*', { cwd: tmpPath });
+
+  // No commits made,
+  // Staging area should not list any files as `deleted`
+  await expect(gStatus({ cwd: tmpPath, index: 'D' })).resolves.toEqual([]);
+});
+
+it('deletes committed files', async () => {
+  expect.assertions(1);
+
+  const tmpPath = f.copy('fixtures');
+  await execa('git', ['init'], { cwd: tmpPath });
+  await execa('git', ['add', '--all'], { cwd: tmpPath });
+  await execa('git', ['commit', '-m', 'initial commit'], { cwd: tmpPath });
+
+  await forceDel('**/*', { cwd: tmpPath });
+
+  // Staging area should list files marked as `deleted`
+  await expect(gStatus({ cwd: tmpPath, index: 'D' })).resolves.not.toEqual([]);
 });
