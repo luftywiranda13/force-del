@@ -7,17 +7,9 @@ const pMap = require('p-map');
 
 const deleteFile = require('./lib/delete-file');
 
-const optionsManager = options => {
-  const DEFAULTS = {
-    nodir: false,
-    cwd: process.cwd(),
-  };
+module.exports = (patterns, options = {}) => {
+  const opts = Object.assign({ nodir: false, cwd: process.cwd() }, options);
 
-  return Object.assign({}, DEFAULTS, options);
-};
-
-module.exports = (patterns, options) => {
-  const opts = optionsManager(options);
   const mapper = file => deleteFile(file, opts);
 
   return globby(patterns, opts)
