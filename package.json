@@ -39,7 +39,7 @@
     "pify": "^3.0.0",
     "prettier": "^1.9.2",
     "remove-lockfiles": "^2.1.1",
-    "xo": "^0.18.2"
+    "xo": "^0.20.0"
   },
   "jest": {
     "testEnvironment": "node",
