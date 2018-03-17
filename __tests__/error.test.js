@@ -5,7 +5,7 @@ jest.mock('execa');
 const execa = require('execa');
 const fixtures = require('fixturez');
 
-const forceDel = require('../');
+const forceDel = require('..');
 
 const f = fixtures(__dirname);
 

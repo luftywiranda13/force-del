@@ -6,7 +6,7 @@ const execa = require('execa');
 const fixtures = require('fixturez');
 const gStatus = require('g-status');
 
-const forceDel = require('../');
+const forceDel = require('..');
 
 const f = fixtures(__dirname);
 
