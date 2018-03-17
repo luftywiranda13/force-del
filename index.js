@@ -8,7 +8,7 @@ const pMap = require('p-map');
 const deleteFile = require('./lib/delete-file');
 
 module.exports = (patterns, options = {}) => {
-  const opts = Object.assign({ nodir: false, cwd: process.cwd() }, options);
+  const opts = Object.assign({ onlyFiles: false, cwd: process.cwd() }, options);
 
   const mapper = file => deleteFile(file, opts);
 

@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "execa": "^0.9.0",
-    "globby": "^7.1.1",
+    "globby": "^8.0.1",
     "p-map": "^1.2.0",
     "rimraf": "^2.6.2"
   },

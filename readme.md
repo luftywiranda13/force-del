@@ -66,7 +66,7 @@ Default: `process.cwd()`
 
 Current working directory.
 
-##### nodir
+##### onlyFiles
 
 Type: `boolean`<br />
 Default: `false`
