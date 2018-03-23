@@ -71,7 +71,7 @@ Current working directory.
 Type: `boolean`<br />
 Default: `false`
 
-From [node-glob](https://github.com/isaacs/node-glob#options). Set to `true` to match files only.
+Set to `true` to match files only.
 
 Other options are derived from the defaults of these libraries:
 
