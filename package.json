@@ -12,8 +12,12 @@
   "engines": {
     "node": ">=6"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "remove-lockfiles && lint-staged"
+    }
+  },
   "scripts": {
-    "precommit": "remove-lockfiles && lint-staged",
     "test:watch": "jest --watch",
     "test": "xo && jest --coverage"
   },
@@ -32,8 +36,8 @@
     "fixturez": "^1.1.0",
     "fs-extra": "^7.0.1",
     "g-status": "^2.0.0",
-    "husky": "^0.14.3",
-    "jest": "^22.1.0",
+    "husky": "^1.2.0",
+    "jest": "^23.6.0",
     "lint-staged": "^8.1.0",
     "pify": "^4.0.1",
     "remove-lockfiles": "^2.1.1",
@@ -57,7 +61,8 @@
   },
   "prettier": {
     "bracketSpacing": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "xo": {
     "envs": [
