@@ -12,8 +12,12 @@
   "engines": {
     "node": ">=6"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "remove-lockfiles && lint-staged"
+    }
+  },
   "scripts": {
-    "precommit": "remove-lockfiles && lint-staged",
     "test:watch": "jest --watch",
     "test": "xo && jest --coverage"
   },
