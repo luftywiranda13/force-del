@@ -41,7 +41,7 @@
     "lint-staged": "^8.1.0",
     "pify": "^4.0.1",
     "remove-lockfiles": "^2.1.1",
-    "xo": "^0.24.0"
+    "xo": "^0.31.0"
   },
   "jest": {
     "testEnvironment": "node",
